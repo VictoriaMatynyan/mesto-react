@@ -8,14 +8,13 @@ const PopupWithImage = ({card, onClose}) => {
                 <figure className="popup__figure">
                     <button 
                     className="popup__close-button" 
-                    type="button">
+                    type="button"
+                    onClick={onClose}>
                     </button>
                     <img 
                     src={card.link}
                     alt={card.name}
-                    onClick={onClose}
-                    className="popup__image"
-                    />
+                    className="popup__image" />
                     <figcaption className="popup__caption">{card.name}</figcaption>
                 </figure>
             </div>

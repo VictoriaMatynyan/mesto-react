@@ -13,7 +13,9 @@ const Card = ({card, onCardClick}) => {
             src={card.link} // link, name, likes - это всё пропсы объекта с сервера
             alt={card.name} 
             className="element__image element__popup-open"
-            onClick={handleClick(card)} />
+            onClick={
+                () => handleClick(card)
+                } />
             <button
             type="button"
             className="element__delete-button">
