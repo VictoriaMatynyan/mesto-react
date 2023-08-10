@@ -17,23 +17,24 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) => {
             setUserName(user.name)
             setUserDescription(user.about)
             setAvatar(user.avatar)
-        });
+        })
+        .catch((err) => {
+            console.log(`Ошибка при загрузки данных о профиле: ${err}`);
+        })
     }
 
     const handleCardsRequest = () => {
         api.getInitialCards()
-        .then(cards => setCards(cards));
+        .then(cards => setCards(cards))
+        .catch((err) => {
+            console.log(`Ошибка при загрузки карточек: ${err}`);
+        })
     }
 
     useEffect(() => {
         handleProfilaDataRequest(),
         handleCardsRequest()
     }, []);
-
-    const handleFormsubmit = (e) => {
-        e.preventDefault();
-
-    }
 
     return (
         <main className="content">

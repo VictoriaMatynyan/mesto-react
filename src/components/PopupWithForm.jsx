@@ -2,7 +2,7 @@ import React from "react";
 
 const PopupWithForm = ({ isOpen, name, onClose, title, children, textOnButton }) => {
     return (
-        <div className={`popup popup-${name} ${isOpen && "popup_opened"}`}>
+        <div className={`popup ${isOpen && "popup_opened"}`}>
         <div className="popup__container">
             <button
             className="popup__close-button"
@@ -14,7 +14,7 @@ const PopupWithForm = ({ isOpen, name, onClose, title, children, textOnButton })
             name={name}
             noValidate>
                 {children}
-                <button type="submit" className="popup__submit-button">{textOnButton}</button>
+                <button type="submit" className="popup__submit-button">{textOnButton || 'Сохранить'}</button>
             </form>
         </div>
     </div>
@@ -22,3 +22,4 @@ const PopupWithForm = ({ isOpen, name, onClose, title, children, textOnButton })
 }
 
 export default PopupWithForm;
+// текст "Сохранить" задан по умолчанию. Теперь, если пропс textOnButton не передать, возьмётся значение по умолчанию
