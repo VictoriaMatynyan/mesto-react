@@ -16,7 +16,8 @@ Mesto (or 'Place' in English) is performed as an interactive web page for postin
 * CSS Flexbox and Grid Layout;
 * pseudo-classes for CSS selectors;
 * CSS transition;
-* media queries for desctop and mobile versions (from 1280px to 320px).
+* media queries for desctop and mobile versions (from 1280px to 320px);
+* Vite is used for the project building.
 
 ## What to improve
 
