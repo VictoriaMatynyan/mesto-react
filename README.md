@@ -4,7 +4,6 @@
 
 Thisp project is realized during studying at [Yandex Praktikum](https://practicum.yandex.ru/) for web-developers.
 Mesto (or 'Place' in English) is performed as an interactive web page for posting pictures and gaining likes.
-For 3 Sprints at Yandex Praktikum this project was being updated in its features. Now it is being updated in its code performance, using more JavaScript language.
 
 ## Applied decisions in Project No.4:
 
