@@ -32,7 +32,7 @@ const Main = ({onEditAvatar, onEditProfile, onAddPlace, onCardClick}) => {
 
     const handleFormsubmit = (e) => {
         e.preventDefault();
-        
+
     }
 
     return (

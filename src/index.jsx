@@ -1,3 +1,5 @@
+window.global = window //справление ошибки ReferenceError: global is not defined
+
 //монтирование компонента App
 import React from 'react';
 import ReactDOM from 'react-dom/client';

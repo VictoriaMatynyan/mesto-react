@@ -5,8 +5,6 @@ import Footer from './Footer.jsx';
 import PopupWithForm from './PopupWithForm.jsx';
 import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
-import api from '../utils/Api.js';
-
 
 function App() {
   
@@ -24,22 +22,18 @@ function App() {
   //создаём обработчики для открытия попапов
   const handleEditAvatarClick = () => {
     setEditAvatarPopupOpen(true);
-    setClosedWithEsc(true);
   }
 
   const handleEditProfileClick = () => {
     setEditProfilePopupOpen(true);
-    setClosedWithEsc(true);
   }
 
   const handleAddPlaceClick = () => {
     setAddPlacePopupOpen(true);
-    setClosedWithEsc(true);
   }
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
-    setClosedWithEsc(true);
   }
 
   //функция закрытия всех попапов
