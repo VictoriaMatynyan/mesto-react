@@ -66,6 +66,22 @@ class Api {
         .then(this._validateResponse.bind(this));
     }
 
+    changeLikeCardStatus(cardItem, isLiked) {
+        if(isLiked) {
+            return fetch(`${this.baseUrl}/cards/${cardItem._id}/likes`, {
+                method: 'PUT',
+                headers: this.headers,
+            })
+            .then(this._validateResponse.bind(this));
+        } else {
+            return fetch(`${this.baseUrl}/cards/${cardItem._id}/likes`, {
+            method: 'DELETE',
+            headers: this.headers,
+        })
+        .then(this._validateResponse.bind(this));
+        }  
+    }
+
     removeCard(cardItem) {
         return fetch(`${this.baseUrl}/cards/${cardItem._id}`, {
             method: 'DELETE',

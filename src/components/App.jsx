@@ -8,7 +8,7 @@ import PopupWithImage from './PopupWithImage.jsx';
 
 import api from '../utils/Api.js';
 
-//экспорт объекта контекста для изменения данных пользователя
+//импорт объекта контекста для изменения данных пользователя
 import CurrentUserContext from '../contexts/CurrentUserContext.jsx';
 
 function App() {
@@ -16,18 +16,21 @@ function App() {
   //создаём стейт для изменения данных пользователя
   const [currentUser, setCurrentUser] = useState({});
 
-  //обращаемся к api и получаем данные пользователя
+  //создаём пустой массив для карточек, которые придут с сервера
+  const [cards, setCards] = useState([]);
+
+  // объединяем запросы и получение данных пользователя и карточек в 1 хук
   useEffect(() => {
-    api.getUserInfo()
-    .then((userInfo) => {
-      setCurrentUser(userInfo);
+    Promise.all ([api.getUserInfo(), api.getInitialCards()])
+    .then(([userData, cardsData]) => {
+      setCurrentUser(userData);
+      setCards(cardsData);
     })
     .catch((err) => {
-      console.log(`Ошибка при загрузки данных о профиле: ${err}`);
+      console.log(`Ошибка при загрузки данных с сервера: ${err}`);
     })
-  }, []);
+  }, [])
 
-  
   //создаём переменные, отвечающие за видимость попапов
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
@@ -56,6 +59,35 @@ function App() {
     setSelectedCard(card);
   }
 
+  const handleCardLike = (card) => {
+    // снова проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    // console.log(`card = ${JSON.stringify(card)}`)
+    
+    // отправляем запрос в API и получаем обновлённые данные карточки
+    api.changeLikeCardStatus(card, !isLiked)
+    .then((newCard) => {
+        setCards((currentState) => currentState.map((cardElement) => cardElement._id === card._id ? newCard : cardElement));
+    })
+    .catch((err) => {
+        console.log(`Ошибка при лайке/дислайке элемента:: ${err}`);
+    })
+  }
+  // выше, в api, мы принимаем текущее состояние - currentState - и используем map для обновления каждого 
+  // элемента массива cards
+  // NB: в функции handleCardLike в зависимости от isLiked происходит рендер новой карточки с новым значением isLiked
+
+  const handleCardDelete = (card) => {
+    api.removeCard(card)
+    .then(() => {
+      // делаем неравными id карточки (возвращаем false), чтобы реализовать её удаление
+      setCards((currentState) => currentState.filter((cardElement) => cardElement._id !== card._id));
+    })
+    .catch((err) => {
+      console.log(`Ошибка при удалении элемента: ${err}`)
+    })
+  }
+
   //функция закрытия всех попапов
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
@@ -74,6 +106,9 @@ function App() {
     onEditProfile={handleEditProfileClick}
     onAddPlace={handleAddPlaceClick}
     onCardClick={handleCardClick}
+    onCardLike={handleCardLike}
+    onCardDelete={handleCardDelete}
+    cards={cards}
   />
   <Footer />
   <PopupWithImage
@@ -145,3 +180,28 @@ function App() {
 }
 
 export default App;
+
+
+// на всякий случай
+  // //обращаемся к api и получаем данные пользователя
+  // useEffect(() => {
+  //   api.getUserInfo()
+  //   .then((currentUser) => {
+  //     setCurrentUser(currentUser);
+  //   })
+  //   .catch((err) => {
+  //     console.log(`Ошибка при загрузки данных о профиле: ${err}`);
+  //   })
+  // }, []);
+
+  //  const handleCardsRequest = () => {
+  //       api.getInitialCards()
+  //       .then(cards => setCards(cards))
+  //       .catch((err) => {
+  //           console.log(`Ошибка при загрузки карточек: ${err}`);
+  //       })
+  //   }
+
+  // useEffect(() => {
+  //     handleCardsRequest()
+  // }, []);
