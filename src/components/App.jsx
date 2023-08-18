@@ -6,7 +6,27 @@ import PopupWithForm from './PopupWithForm.jsx';
 import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
 
+import api from '../utils/Api.js';
+
+//экспорт объекта контекста для изменения данных пользователя
+import CurrentUserContext from '../contexts/CurrentUserContext.jsx';
+
 function App() {
+
+  //создаём стейт для изменения данных пользователя
+  const [currentUser, setCurrentUser] = useState({}); //null?
+
+  //обращаемся к api и получаем данные пользователя
+  useEffect(() => {
+    api.getUserInfo()
+    .then((userInfo) => {
+      setCurrentUser(userInfo);
+    })
+    .catch((err) => {
+      console.log(`Ошибка при загрузки данных о профиле: ${err}`);
+    })
+  }, []);
+
   
   //создаём переменные, отвечающие за видимость попапов
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
@@ -41,12 +61,13 @@ function App() {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
-    setClosedWithEsc(false);
+    // setClosedWithEsc(false);
     setSelectedCard(null);
   }
 
   return (
     <>
+  <CurrentUserContext.Provider value={currentUser}>
   <Header />
   <Main
     onEditAvatar={handleEditAvatarClick}
@@ -118,6 +139,7 @@ function App() {
       placeholder={"Ссылка на картинку"}
     />
   </PopupWithForm>
+  </CurrentUserContext.Provider>
 </>
   );
 }
