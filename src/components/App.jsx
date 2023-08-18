@@ -14,7 +14,7 @@ import CurrentUserContext from '../contexts/CurrentUserContext.jsx';
 function App() {
 
   //создаём стейт для изменения данных пользователя
-  const [currentUser, setCurrentUser] = useState({}); //null?
+  const [currentUser, setCurrentUser] = useState({});
 
   //обращаемся к api и получаем данные пользователя
   useEffect(() => {
