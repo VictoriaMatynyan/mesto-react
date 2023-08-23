@@ -6,6 +6,7 @@ import PopupWithForm from './PopupWithForm.jsx';
 import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
 import EditProfilePopup from './EditProfilePopup.jsx';
+import EditAvatarPopup from './EditAvatarPopup.jsx';
 
 import api from '../utils/Api.js';
 
@@ -99,12 +100,24 @@ function App() {
     })
   }
 
+  const handleUpdateAvatar = (avatar) => {
+    api.editAvatar(avatar)
+    .then((data) => {
+      setCurrentUser(data);
+    })
+    .catch((err) => {
+      console.log(`Ошибка загрузки аватара: ${err}`);
+    })
+    .finally(() => {
+      closeAllPopups();
+    })
+  }
+
   //функция закрытия всех попапов
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
-    // setClosedWithEsc(false);
     setSelectedCard(null);
   }
 
@@ -132,30 +145,11 @@ function App() {
     onClose={closeAllPopups}
     onUpdateUser={handleUpdateUser} 
   />
-  {/* <PopupWithForm
-    isOpen={isEditProfilePopupOpen}
-    name={"edit"}
+  <EditAvatarPopup 
+    isOpen={isEditAvatarPopupOpen} 
     onClose={closeAllPopups}
-    title={"Редактировать профиль"}
-    textOnButton={"Сохранить"}
-  >
-    <ProfileFormInput
-      type={"text"}
-      name={"name"}
-      idName={"name"}
-      placeholder={"Ваше имя"}
-      minLength={2}
-      maxLength={40}
-    />
-    <ProfileFormInput
-      type={"text"}
-      name={"about"}
-      idName={"description"}
-      placeholder={"О себе"}
-      minLength={2}
-      maxLength={200}
-    />
-  </PopupWithForm> */}
+    onUpdateAvatar={handleUpdateAvatar}
+  />
   <PopupWithForm
     isOpen={isAddPlacePopupOpen}
     name={"add"}
@@ -176,7 +170,7 @@ function App() {
       placeholder={"Ссылка на картинку"}
     />
   </PopupWithForm>
-  <PopupWithForm
+  {/* <PopupWithForm
     isOpen={isEditAvatarPopupOpen}
     name={"update"}
     onClose={closeAllPopups}
@@ -189,7 +183,7 @@ function App() {
       idName={"avatarUpdate"}
       placeholder={"Ссылка на картинку"}
     />
-  </PopupWithForm>
+  </PopupWithForm> */}
   </CurrentUserContext.Provider>
 </>
   );

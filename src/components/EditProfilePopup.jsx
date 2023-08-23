@@ -48,7 +48,6 @@ const EditProfilePopup = ({ isOpen, onClose, onUpdateUser }) => {
         onChange={handleChangeName}
         type={"text"}
         idName={"name"}
-        id={"name-input"}
         placeholder={"Ваше имя"}
         className={"popup__input popup__input_type_name"}
         minLength={2}
