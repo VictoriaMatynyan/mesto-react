@@ -5,6 +5,7 @@ import Footer from './Footer.jsx';
 import PopupWithForm from './PopupWithForm.jsx';
 import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
+import EditProfilePopup from './EditProfilePopup.jsx';
 
 import api from '../utils/Api.js';
 
@@ -62,8 +63,7 @@ function App() {
   const handleCardLike = (card) => {
     // снова проверяем, есть ли уже лайк на этой карточке
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-    // console.log(`card = ${JSON.stringify(card)}`)
-    
+
     // отправляем запрос в API и получаем обновлённые данные карточки
     api.changeLikeCardStatus(card, !isLiked)
     .then((newCard) => {
@@ -85,6 +85,17 @@ function App() {
     })
     .catch((err) => {
       console.log(`Ошибка при удалении элемента: ${err}`)
+    })
+  }
+
+  const handleUpdateUser = ({name, about}) => {
+    api.editUserInfo({name, about})
+    .then((data) => setCurrentUser(data))
+    .catch((err) => {
+      console.log(`Ошибка загрузки данных пользователя: ${err}`);
+    })
+    .finally(() => {
+      closeAllPopups();
     })
   }
 
@@ -116,7 +127,12 @@ function App() {
     card={selectedCard}
     onClose={closeAllPopups}
   />
-  <PopupWithForm
+  <EditProfilePopup
+    isOpen={isEditProfilePopupOpen} 
+    onClose={closeAllPopups}
+    onUpdateUser={handleUpdateUser} 
+  />
+  {/* <PopupWithForm
     isOpen={isEditProfilePopupOpen}
     name={"edit"}
     onClose={closeAllPopups}
@@ -139,7 +155,7 @@ function App() {
       minLength={2}
       maxLength={200}
     />
-  </PopupWithForm>
+  </PopupWithForm> */}
   <PopupWithForm
     isOpen={isAddPlacePopupOpen}
     name={"add"}
