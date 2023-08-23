@@ -170,20 +170,6 @@ function App() {
       placeholder={"Ссылка на картинку"}
     />
   </PopupWithForm>
-  {/* <PopupWithForm
-    isOpen={isEditAvatarPopupOpen}
-    name={"update"}
-    onClose={closeAllPopups}
-    title={"Обновить аватар"}
-    textOnButton={"Сохранить"}
-  >
-    <ProfileFormInput
-      type={"url"}
-      name={"link"}
-      idName={"avatarUpdate"}
-      placeholder={"Ссылка на картинку"}
-    />
-  </PopupWithForm> */}
   </CurrentUserContext.Provider>
 </>
   );
