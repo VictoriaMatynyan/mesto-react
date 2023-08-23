@@ -7,6 +7,7 @@ import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
 import EditProfilePopup from './EditProfilePopup.jsx';
 import EditAvatarPopup from './EditAvatarPopup.jsx';
+import AddPlacePopup from './AddPlacePopup.jsx';
 
 import api from '../utils/Api.js';
 
@@ -113,6 +114,20 @@ function App() {
     })
   }
 
+  const handleAddPlaceSubmit = ({name, link}) => {
+    api.addNewCard({name, link})
+    .then((newCard) => {
+      // newCard - новая карточка, добавленная с помощью API, оператор ... расширяет копию текущего массива
+      setCards([newCard, ...cards]);
+    })
+    .catch((err) => {
+      console.log(`Ошибка при добавлении новой карточки: ${err}`);
+    })
+    .finally(() => {
+      closeAllPopups();
+    })
+  }
+
   //функция закрытия всех попапов
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
@@ -150,7 +165,12 @@ function App() {
     onClose={closeAllPopups}
     onUpdateAvatar={handleUpdateAvatar}
   />
-  <PopupWithForm
+  <AddPlacePopup
+    isOpen={isAddPlacePopupOpen}
+    onClose={closeAllPopups}
+    onAddPlace={handleAddPlaceSubmit}
+  />
+  {/* <PopupWithForm
     isOpen={isAddPlacePopupOpen}
     name={"add"}
     onClose={closeAllPopups}
@@ -169,7 +189,7 @@ function App() {
       idName={"placeDescription"}
       placeholder={"Ссылка на картинку"}
     />
-  </PopupWithForm>
+  </PopupWithForm> */}
   </CurrentUserContext.Provider>
 </>
   );
