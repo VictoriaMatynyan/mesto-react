@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Header from './Header.jsx';
 import Main from './Main.jsx';
 import Footer from './Footer.jsx';
-import PopupWithForm from './PopupWithForm.jsx';
-import ProfileFormInput from './ProfileFormInput.jsx';
 import PopupWithImage from './PopupWithImage.jsx';
 import EditProfilePopup from './EditProfilePopup.jsx';
 import EditAvatarPopup from './EditAvatarPopup.jsx';
@@ -11,15 +9,15 @@ import AddPlacePopup from './AddPlacePopup.jsx';
 
 import api from '../utils/Api.js';
 
-//импорт объекта контекста для изменения данных пользователя
+// импорт объекта контекста для изменения данных пользователя
 import CurrentUserContext from '../contexts/CurrentUserContext.jsx';
 
 function App() {
 
-  //создаём стейт для изменения данных пользователя
+  // создаём стейт для изменения данных пользователя
   const [currentUser, setCurrentUser] = useState({});
 
-  //создаём пустой массив для карточек, которые придут с сервера
+  // создаём пустой массив для карточек, которые придут с сервера
   const [cards, setCards] = useState([]);
 
   // объединяем запросы и получение данных пользователя и карточек в 1 хук
@@ -34,18 +32,18 @@ function App() {
     })
   }, [])
 
-  //создаём переменные, отвечающие за видимость попапов
+  // создаём переменные, отвечающие за видимость попапов
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false)
 
-  //создаём возможность закрытия попапов по Esc
-  const [isClosedWithEsc, setClosedWithEsc] = useState(false);
-
-  //создаём стейт-переменную для открытия popupWithImage
+  // создаём стейт-переменную для открытия popupWithImage
   const [selectedCard, setSelectedCard] = useState(null);
 
-  //создаём обработчики для открытия попапов
+  // создаём стейт для индикаторов загрузки запросов
+  const [isLoading, setIsLoading] = useState(false);
+
+  // создаём обработчики для открытия попапов
   const handleEditAvatarClick = () => {
     setEditAvatarPopupOpen(true);
   }
@@ -80,6 +78,7 @@ function App() {
   // NB: в функции handleCardLike в зависимости от isLiked происходит рендер новой карточки с новым значением isLiked
 
   const handleCardDelete = (card) => {
+    // setIsLoading(true);
     api.removeCard(card)
     .then(() => {
       // делаем неравными id карточки (возвращаем false), чтобы реализовать её удаление
@@ -91,6 +90,7 @@ function App() {
   }
 
   const handleUpdateUser = ({name, about}) => {
+    setIsLoading(true); //внутри блока then не работает. Вероятно, проблема в асинхронности
     api.editUserInfo({name, about})
     .then((data) => setCurrentUser(data))
     .catch((err) => {
@@ -98,10 +98,12 @@ function App() {
     })
     .finally(() => {
       closeAllPopups();
+      setIsLoading(false)
     })
   }
 
   const handleUpdateAvatar = (avatar) => {
+    setIsLoading(true);
     api.editAvatar(avatar)
     .then((data) => {
       setCurrentUser(data);
@@ -111,10 +113,12 @@ function App() {
     })
     .finally(() => {
       closeAllPopups();
+      setIsLoading(false);
     })
   }
 
   const handleAddPlaceSubmit = ({name, link}) => {
+    setIsLoading(true);
     api.addNewCard({name, link})
     .then((newCard) => {
       // newCard - новая карточка, добавленная с помощью API, оператор ... расширяет копию текущего массива
@@ -125,16 +129,33 @@ function App() {
     })
     .finally(() => {
       closeAllPopups();
+      setIsLoading(false);
     })
   }
 
-  //функция закрытия всех попапов
+  // функция закрытия всех попапов
   const closeAllPopups = () => {
     setEditAvatarPopupOpen(false);
     setEditProfilePopupOpen(false);
     setAddPlacePopupOpen(false);
     setSelectedCard(null);
   }
+
+  // закрываем попапы по Esc
+  useEffect(() => {
+    const closeWithEsc = (e) => {
+      if (e.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+    document.addEventListener('keydown', closeWithEsc);
+    // удаляем событие при размонтировании компонента
+    return () => {
+      document.removeEventListener('keydown', closeWithEsc);
+    }
+  }, []);
+
+ 
 
   return (
     <>
@@ -158,38 +179,21 @@ function App() {
   <EditProfilePopup
     isOpen={isEditProfilePopupOpen} 
     onClose={closeAllPopups}
-    onUpdateUser={handleUpdateUser} 
+    onUpdateUser={handleUpdateUser}
+    textOnButton={isLoading ? "Сохранение..." : "Сохранить"}
   />
   <EditAvatarPopup 
     isOpen={isEditAvatarPopupOpen} 
     onClose={closeAllPopups}
     onUpdateAvatar={handleUpdateAvatar}
+    textOnButton={isLoading ? "Сохранение..." : "Сохранить"}
   />
   <AddPlacePopup
     isOpen={isAddPlacePopupOpen}
     onClose={closeAllPopups}
     onAddPlace={handleAddPlaceSubmit}
+    textOnButton={isLoading ? "Сохранение..." : "Сохранить"}
   />
-  {/* <PopupWithForm
-    isOpen={isAddPlacePopupOpen}
-    name={"add"}
-    onClose={closeAllPopups}
-    title={"Новое место"}
-    textOnButton={"Создать"}
-  >
-    <ProfileFormInput
-      type={"text"}
-      name={"name"}
-      idName={"placeName"}
-      placeholder={"Название"}
-    />
-    <ProfileFormInput
-      type={"url"}
-      name={"link"}
-      idName={"placeDescription"}
-      placeholder={"Ссылка на картинку"}
-    />
-  </PopupWithForm> */}
   </CurrentUserContext.Provider>
 </>
   );
@@ -197,6 +201,20 @@ function App() {
 
 export default App;
 
+
+// в этом коде не работает условия после ||
+// useEffect(() => {
+//   const closeWithEsc = (e) => {
+//     if (e.key === 'Escape' || e.target.classList.contains('popup_opened') || e.target.classList.contains('popup__close-button')) {
+//       closeAllPopups();
+//     }
+//   }
+//   document.addEventListener('keydown', closeWithEsc);
+//   // удаляем событие при размонтировании компонента
+//   return () => {
+//     document.removeEventListener('keydown', closeWithEsc);
+//   }
+// }, []);
 
 // на всякий случай
   // //обращаемся к api и получаем данные пользователя
