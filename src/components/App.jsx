@@ -6,6 +6,7 @@ import PopupWithImage from './PopupWithImage.jsx';
 import EditProfilePopup from './EditProfilePopup.jsx';
 import EditAvatarPopup from './EditAvatarPopup.jsx';
 import AddPlacePopup from './AddPlacePopup.jsx';
+// import PopupWithConfirmation from './PopupWithConfirmation.jsx';
 
 import api from '../utils/Api.js';
 
@@ -35,7 +36,8 @@ function App() {
   // создаём переменные, отвечающие за видимость попапов
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false);
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false);
-  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false)
+  const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false);
+  // const [isConfirmationPopupOpen, setConfirmationPopupOpen] = useState(false);
 
   // создаём стейт-переменную для открытия popupWithImage
   const [selectedCard, setSelectedCard] = useState(null);
@@ -55,6 +57,10 @@ function App() {
   const handleAddPlaceClick = () => {
     setAddPlacePopupOpen(true);
   }
+
+  // const handleCardDeleteConfirmation = () => {
+  //   setConfirmationPopupOpen(true);
+  // }
 
   const handleCardClick = (card) => {
     setSelectedCard(card);
@@ -78,7 +84,7 @@ function App() {
   // NB: в функции handleCardLike в зависимости от isLiked происходит рендер новой карточки с новым значением isLiked
 
   const handleCardDelete = (card) => {
-    // setIsLoading(true);
+    setIsLoading(true);
     api.removeCard(card)
     .then(() => {
       // делаем неравными id карточки (возвращаем false), чтобы реализовать её удаление
@@ -86,6 +92,10 @@ function App() {
     })
     .catch((err) => {
       console.log(`Ошибка при удалении элемента: ${err}`)
+    })
+    .finally(() => {
+      closeAllPopups();
+      setIsLoading(false);
     })
   }
 
@@ -171,6 +181,13 @@ function App() {
     cards={cards}
   />
   <Footer />
+  {/* <PopupWithConfirmation
+    isOpen={isConfirmationPopupOpen}
+    card={selectedCard}
+    textOnButton={isLoading ? "Сохранение..." : "Да"}
+    onCardDelete={handleCardDelete}
+    onClose={closeAllPopups}
+  /> */}
   <PopupWithImage
     isOpen={selectedCard}
     card={selectedCard}
