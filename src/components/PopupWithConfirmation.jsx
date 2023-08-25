@@ -1,15 +1,11 @@
 import React from "react";
 import PopupWithForm from "./PopupWithForm.jsx";
 
-const PopupWithConfirmation = ({ isOpen, onClose, onCardDelete, textOnButton, card }) => {
+const PopupWithConfirmation = ({ isOpen, onClose, onSubmit, textOnButton }) => {
 
-    function handleCardDelete(card) {
-        onCardDelete(card);
-    }
-
-    function handleSubmit(e) {
+    const handleSubmit = (e) => {
         e.preventDefault();
-        handleCardDelete(card);
+        onSubmit(card);
     }
 
     return (

@@ -18,7 +18,7 @@ const Card = ({ card, onCardClick, onCardDelete, onCardLike }) => {
         `element__like-button ${isLiked && 'element__like-button_active'}` 
     );
 
-    // обработчик для отображния popupWithImage
+    // обработчик для отображения popupWithImage
     const handleClick = (card) => {
         onCardClick(card);
     };
@@ -27,7 +27,7 @@ const Card = ({ card, onCardClick, onCardDelete, onCardLike }) => {
         onCardLike(card);
     };
 
-    const handleDeleteClick = (card) => {
+    const handleDeleteClick = (card) => { //здесь был аргумент card
         onCardDelete(card);
     };
 
@@ -43,8 +43,8 @@ const Card = ({ card, onCardClick, onCardDelete, onCardLike }) => {
             <button
             type="button"
             className="element__delete-button"
-            onClick={() => handleDeleteClick(card)
-            } />
+            onClick={() => handleDeleteClick(card)}
+            />
             }
             <div className="element__text">
                 <h2 className="element__caption">{card.name}</h2>

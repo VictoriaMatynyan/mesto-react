@@ -58,10 +58,6 @@ function App() {
     setAddPlacePopupOpen(true);
   }
 
-  // const handleCardDeleteConfirmation = () => {
-  //   setConfirmationPopupOpen(true);
-  // }
-
   const handleCardClick = (card) => {
     setSelectedCard(card);
   }
@@ -89,26 +85,24 @@ function App() {
     .then(() => {
       // делаем неравными id карточки (возвращаем false), чтобы реализовать её удаление
       setCards((currentState) => currentState.filter((cardElement) => cardElement._id !== card._id));
+      closeAllPopups();
+      setIsLoading(false);
     })
     .catch((err) => {
       console.log(`Ошибка при удалении элемента: ${err}`)
-    })
-    .finally(() => {
-      closeAllPopups();
-      setIsLoading(false);
     })
   }
 
   const handleUpdateUser = ({name, about}) => {
     setIsLoading(true); //внутри блока then не работает. Вероятно, проблема в асинхронности
     api.editUserInfo({name, about})
-    .then((data) => setCurrentUser(data))
-    .catch((err) => {
-      console.log(`Ошибка загрузки данных пользователя: ${err}`);
-    })
-    .finally(() => {
+    .then((data) => {
+      setCurrentUser(data)
       closeAllPopups();
       setIsLoading(false)
+    })
+    .catch((err) => {
+      console.log(`Ошибка загрузки данных пользователя: ${err}`);
     })
   }
 
@@ -117,13 +111,11 @@ function App() {
     api.editAvatar(avatar)
     .then((data) => {
       setCurrentUser(data);
+      closeAllPopups();
+      setIsLoading(false);
     })
     .catch((err) => {
       console.log(`Ошибка загрузки аватара: ${err}`);
-    })
-    .finally(() => {
-      closeAllPopups();
-      setIsLoading(false);
     })
   }
 
@@ -133,13 +125,12 @@ function App() {
     .then((newCard) => {
       // newCard - новая карточка, добавленная с помощью API, оператор ... расширяет копию текущего массива
       setCards([newCard, ...cards]);
+      closeAllPopups();
+      setIsLoading(false);
+
     })
     .catch((err) => {
       console.log(`Ошибка при добавлении новой карточки: ${err}`);
-    })
-    .finally(() => {
-      closeAllPopups();
-      setIsLoading(false);
     })
   }
 
@@ -166,7 +157,6 @@ function App() {
   }, []);
 
  
-
   return (
     <>
   <CurrentUserContext.Provider value={currentUser}>
@@ -177,16 +167,16 @@ function App() {
     onAddPlace={handleAddPlaceClick}
     onCardClick={handleCardClick}
     onCardLike={handleCardLike}
+    // onConfirmDeletion={handleConfirmDeletion}
     onCardDelete={handleCardDelete}
     cards={cards}
   />
   <Footer />
   {/* <PopupWithConfirmation
     isOpen={isConfirmationPopupOpen}
-    card={selectedCard}
     textOnButton={isLoading ? "Сохранение..." : "Да"}
-    onCardDelete={handleCardDelete}
     onClose={closeAllPopups}
+    onSubmit={handleCardDelete}
   /> */}
   <PopupWithImage
     isOpen={selectedCard}
@@ -209,50 +199,16 @@ function App() {
     isOpen={isAddPlacePopupOpen}
     onClose={closeAllPopups}
     onAddPlace={handleAddPlaceSubmit}
-    textOnButton={isLoading ? "Сохранение..." : "Сохранить"}
+    textOnButton={isLoading ? "Сохранение..." : "Создать"}
   />
-  </CurrentUserContext.Provider>
+  </CurrentUserContext.Provider> 
 </>
   );
 }
 
 export default App;
 
-
-// в этом коде не работает условия после ||
-// useEffect(() => {
-//   const closeWithEsc = (e) => {
-//     if (e.key === 'Escape' || e.target.classList.contains('popup_opened') || e.target.classList.contains('popup__close-button')) {
-//       closeAllPopups();
-//     }
-//   }
-//   document.addEventListener('keydown', closeWithEsc);
-//   // удаляем событие при размонтировании компонента
-//   return () => {
-//     document.removeEventListener('keydown', closeWithEsc);
-//   }
-// }, []);
-
-// на всякий случай
-  // //обращаемся к api и получаем данные пользователя
-  // useEffect(() => {
-  //   api.getUserInfo()
-  //   .then((currentUser) => {
-  //     setCurrentUser(currentUser);
-  //   })
-  //   .catch((err) => {
-  //     console.log(`Ошибка при загрузки данных о профиле: ${err}`);
-  //   })
-  // }, []);
-
-  //  const handleCardsRequest = () => {
-  //       api.getInitialCards()
-  //       .then(cards => setCards(cards))
-  //       .catch((err) => {
-  //           console.log(`Ошибка при загрузки карточек: ${err}`);
-  //       })
-  //   }
-
-  // useEffect(() => {
-  //     handleCardsRequest()
-  // }, []);
+// const handleConfirmDeletion = (card) => {
+  //   setCardData(card);
+  //   setConfirmationPopupOpen(true);
+  // }

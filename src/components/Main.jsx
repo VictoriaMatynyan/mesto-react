@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Card from './Card.jsx';
 
 //импорт объекта контекста для изменения данных пользователя
@@ -10,7 +10,7 @@ const Main = ({
     onAddPlace, 
     onCardClick, 
     onCardLike, 
-    onCardDelete, 
+    onCardDelete,
     cards 
 }) => {
 
@@ -55,7 +55,7 @@ const Main = ({
                 card={card} 
                 onCardClick={onCardClick} 
                 onCardLike={onCardLike} 
-                onCardDelete={onCardDelete} 
+                onCardDelete={onCardDelete}
                 />
             ))}
         </section>
