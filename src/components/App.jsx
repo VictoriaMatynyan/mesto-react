@@ -86,11 +86,11 @@ function App() {
       // делаем неравными id карточки (возвращаем false), чтобы реализовать её удаление
       setCards((currentState) => currentState.filter((cardElement) => cardElement._id !== card._id));
       closeAllPopups();
-      setIsLoading(false);
     })
     .catch((err) => {
       console.log(`Ошибка при удалении элемента: ${err}`)
     })
+    .finally(() => setIsLoading(false))
   }
 
   const handleUpdateUser = ({name, about}) => {
@@ -99,11 +99,11 @@ function App() {
     .then((data) => {
       setCurrentUser(data)
       closeAllPopups();
-      setIsLoading(false)
     })
     .catch((err) => {
       console.log(`Ошибка загрузки данных пользователя: ${err}`);
     })
+    .finally(() => setIsLoading(false))
   }
 
   const handleUpdateAvatar = (avatar) => {
@@ -112,11 +112,11 @@ function App() {
     .then((data) => {
       setCurrentUser(data);
       closeAllPopups();
-      setIsLoading(false);
     })
     .catch((err) => {
       console.log(`Ошибка загрузки аватара: ${err}`);
     })
+    .finally(() => setIsLoading(false))
   }
 
   const handleAddPlaceSubmit = ({name, link}) => {
@@ -126,12 +126,11 @@ function App() {
       // newCard - новая карточка, добавленная с помощью API, оператор ... расширяет копию текущего массива
       setCards([newCard, ...cards]);
       closeAllPopups();
-      setIsLoading(false);
-
     })
     .catch((err) => {
       console.log(`Ошибка при добавлении новой карточки: ${err}`);
     })
+    .finally(() => setIsLoading(false))
   }
 
   // функция закрытия всех попапов
